@@ -1,10 +1,18 @@
-const form = document.querySelector('#noteForm')
-const title = document.querySelector('#title')
-const description = document.querySelector('#description')
+const noteForm = document.querySelector("#noteForm");
+const title = document.querySelector("#title");
+const description = document.querySelector("#description");
 
-form.addEventListener('submit', e => {
-    e.preventDefault()
+noteForm.addEventListener("submit", (e) => {
+  e.preventDefault();
 
-    saveNote(title.value, description.value)
+  if (savedId) {
+    updateNote(savedId, title.value, description.value);
+  } else {
+    saveNote(title.value, description.value);
+  }
 
-})
+  title.value = "";
+  description.value = "";
+
+  title.focus();
+});

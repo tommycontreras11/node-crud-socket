@@ -16,16 +16,32 @@ io.on('connection', (socket) => {
 
     socket.emit('server:loadnotes', notes)
 
-    socket.on('client:newnote', newNote => {
-        const note = { ...newNote, id: uuid() }
-        notes.push({ ...newNote, id: uuid() })
-        socket.emit('server:newnote', note)
+    socket.on('client:newnote', (newNote) => {
+        const note = { ...newNote, id: uuid() };
+        notes.push(note);
+        io.emit('server:newnote', note);
+    });
+
+    socket.on('client:deletenote', (nodeId) => {
+        notes = notes.filter((note) => note.id !== nodeId)
+        io.emit('server:loadnotes', notes)
     })
 
-    socket.on('client:deletenote', nodeId => {
-        notes = notes.filter(n => n.id !== nodeId)
-        socket.emit('server:loadnotes', notes)
-    })
+    socket.on("client:getnote", (noteId) => {
+        const note = notes.find((note) => note.id === noteId);
+        socket.emit("server:selectednote", note);
+    });
+
+    socket.on("client:updatenote", (updatedNote) => {
+        notes = notes.map((note) => {
+          if (note.id === updatedNote.id) {
+            note.title = updatedNote.title;
+            note.description = updatedNote.description;
+          }
+          return note;
+        });
+        io.emit("server:loadnotes", notes);
+      });
 })
 
 server.listen(3000)
