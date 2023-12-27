@@ -18,13 +18,14 @@ const nodeUI = (note) => {
   const btnDelete = div.querySelector('.delete')
 
   btnDelete.addEventListener('click', () => {
-    console.log(btnDelete.dataset.id)
+    deleteNote(btnDelete.dataset.id)
   })
 
   return div
 };
 
 const renderNotes = (notes) => {
+  notesList.innerHTML = '';
   notes.forEach((note) => {
     notesList.append(nodeUI(note))
   });
